@@ -1,0 +1,115 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=author content="[Matt Morris]"><meta name=description content="Install Jellyfin, Sonarr, Radarr and Deluge On a Raspberry Pi 4 Updated on August 16, 2022. Read here for the basics of getting a Raspberry Pi setup for server use.
+Install docker and docker-compose Install docker.
+curl -sSL https://get.docker.com | sh Add docker to the usergroup pi.
+sudo usermod -aG docker pi Preferred way to install docker-compose (from here).
+NOTE: You can run these commands in one shot by pressing Ctrl-x-e (that&amp;rsquo;s control x and keep holding control while pressing e) and pasting the lines as is."><meta name=keywords content><meta name=robots content="noodp"><meta name=theme-color content><link rel=canonical href=https://zivzulander.github.io/projects/jellyfin_on_raspberrypi/><title>Jellyfin, Sonarr, Radarr and Deluge On Raspberry Pi 4 :: matt morris — my personal website</title><link href=https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css rel=stylesheet type=text/css><link rel=stylesheet href=/main.4e5c639214707eff609bb55fe49e183dee42258a73bc90e4cc7b0a84f900798a.css><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color><link rel="shortcut icon" href=/favicon.ico><meta name=msapplication-TileColor content><meta itemprop=name content="Jellyfin, Sonarr, Radarr and Deluge On Raspberry Pi 4"><meta itemprop=description content="Install Jellyfin, Sonarr, Radarr and Deluge On a Raspberry Pi 4 Updated on August 16, 2022. Read here for the basics of getting a Raspberry Pi setup for server use.
+Install docker and docker-compose Install docker.
+curl -sSL https://get.docker.com | sh Add docker to the usergroup pi.
+sudo usermod -aG docker pi Preferred way to install docker-compose (from here).
+NOTE: You can run these commands in one shot by pressing Ctrl-x-e (that&rsquo;s control x and keep holding control while pressing e) and pasting the lines as is."><meta itemprop=wordCount content="609"><meta itemprop=image content="https://zivzulander.github.io"><meta itemprop=keywords content><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://zivzulander.github.io"><meta name=twitter:title content="Jellyfin, Sonarr, Radarr and Deluge On Raspberry Pi 4"><meta name=twitter:description content="Install Jellyfin, Sonarr, Radarr and Deluge On a Raspberry Pi 4 Updated on August 16, 2022. Read here for the basics of getting a Raspberry Pi setup for server use.
+Install docker and docker-compose Install docker.
+curl -sSL https://get.docker.com | sh Add docker to the usergroup pi.
+sudo usermod -aG docker pi Preferred way to install docker-compose (from here).
+NOTE: You can run these commands in one shot by pressing Ctrl-x-e (that&rsquo;s control x and keep holding control while pressing e) and pasting the lines as is."><meta property="og:title" content="Jellyfin, Sonarr, Radarr and Deluge On Raspberry Pi 4"><meta property="og:description" content="Install Jellyfin, Sonarr, Radarr and Deluge On a Raspberry Pi 4 Updated on August 16, 2022. Read here for the basics of getting a Raspberry Pi setup for server use.
+Install docker and docker-compose Install docker.
+curl -sSL https://get.docker.com | sh Add docker to the usergroup pi.
+sudo usermod -aG docker pi Preferred way to install docker-compose (from here).
+NOTE: You can run these commands in one shot by pressing Ctrl-x-e (that&rsquo;s control x and keep holding control while pressing e) and pasting the lines as is."><meta property="og:type" content="article"><meta property="og:url" content="https://zivzulander.github.io/projects/jellyfin_on_raspberrypi/"><meta property="og:image" content="https://zivzulander.github.io"><meta property="article:section" content="projects"><meta property="og:site_name" content="matt morris"></head><body><div class=container><header class=header><span class=header__inner><a href=/ style=text-decoration:none><div class=logo><span class=logo__text>matt morris</span></span></div></a><span class=header__right><nav class=menu><ul class=menu__inner><li><a href=/mainpage/about>about</a></li><li><a href=/mainpage/music>music</a></li><li><a href=/mainpage/other>other</a></li><li><a href=/mainpage/contact>contact</a></li></ul></nav><span class=menu-trigger><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></span><span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 41c10.4934.0 19-8.5066 19-19C41 11.5066 32.4934 3 22 3 11.5066 3 3 11.5066 3 22s8.5066 19 19 19zM7 22C7 13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22z"/></svg></span></span></span></header><div class=content><main class=post><div class=post-info></p></div><article><h2 class=post-title><a href=https://zivzulander.github.io/projects/jellyfin_on_raspberrypi/>Jellyfin, Sonarr, Radarr and Deluge On Raspberry Pi 4</a></h2><div class=post-content><h2 id=install-jellyfin-sonarr-radarr-and-deluge-on-a-raspberry-pi-4>Install Jellyfin, Sonarr, Radarr and Deluge On a Raspberry Pi 4</h2><p>Updated on August 16, 2022.
+Read <a href=https://gist.github.com/zivzulander/09c74ba8217d2a98dcbe1ca40653fc8a>here</a> for the basics of getting a Raspberry Pi setup for server use.</p><h3 id=install-docker-and-docker-compose>Install docker and docker-compose</h3><p>Install <code>docker</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>curl -sSL https://get.docker.com | sh
+</span></span></code></pre></div><p>Add docker to the usergroup pi.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>sudo usermod -aG docker pi
+</span></span></code></pre></div><p>Preferred way to install <code>docker-compose</code> (from <a href=https://gist.github.com/blazewicz/04e666ae1f25387c8b291d81b12c550c>here</a>).</p><blockquote><p>NOTE: You can run these commands in one shot by pressing Ctrl-x-e (that&rsquo;s control <code>x</code> and keep holding control while pressing <code>e</code>) and pasting the lines as is.</p></blockquote><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>sudo apt install python3-venv python3-dev libffi-dev libssl-dev
+</span></span><span style=display:flex><span>sudo mkdir -p /opt/local/docker-compose
+</span></span><span style=display:flex><span>sudo python3 -m venv /opt/local/docker-compose/venv
+</span></span><span style=display:flex><span>sudo /opt/local/docker-compose/venv/bin/pip install --upgrade pip
+</span></span><span style=display:flex><span>sudo /opt/local/docker-compose/venv/bin/pip install docker-compose
+</span></span><span style=display:flex><span>sudo ln -s /opt/local/docker-compose/venv/bin/docker-compose /usr/local/bin/docker-compose
+</span></span></code></pre></div><p>Make a folder for all the config data. I just keep it all on my external HDD.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>mkdir /mnt/usbHDD/docker
+</span></span><span style=display:flex><span>cd /mnt/usbHDD/docker
+</span></span></code></pre></div><p>Create and open the <code>docker-compose.yml</code> file.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>nano docker-compose.yml
+</span></span></code></pre></div><p>Copy the following making adjustments as necessary for your file system. You&rsquo;ll likely need to change the timezone and some of the volumes.</p><blockquote><p>NOTE: Docker volumes look like <code>/path/on/your/harddrive:/what/the/docker/container/sees</code> so change the part before the colon only.</p><p><code>./</code> means current directory which you can change to something like <code>/home/pi/radarr</code> if you want.</p></blockquote><p>All containers are from <a href=https://www.linuxserver.io/>linuxserver.io</a>.</p><p>When finished press <code>Ctrl-S</code> to save and <code>Ctrl-X</code> to quit.</p><pre tabindex=0><code class=language-Containerfile data-lang=Containerfile>---
+version: &#34;2.1&#34;
+services:
+jellyfin:
+    image: lscr.io/linuxserver/jellyfin
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Edmonton
+        #- JELLYFIN_PublishedServerUrl=192.168.0.5 #optional
+    volumes:
+      - ./jellyfin:/config
+      - /mnt/usbHDD/data:/media
+      - ./garbage:/data/tvshows
+      - ./garbage:/data/movies
+      - /opt/vc/lib:/opt/vc/lib
+      - /dev/shm:/config/data/transcoding-temp/transcodes
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
+    devices:
+      #- /dev/vcsm-cma:/dev/vcsm-cma
+      #- /dev/vchiq:/dev/vchiq
+      - /dev/video10:/dev/video10
+      - /dev/video11:/dev/video11
+      - /dev/video12:/dev/video12
+    restart: unless-stopped
+  radarr:
+    image: lscr.io/linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Edmonton
+    volumes:
+      - ./radarr/config:/config
+      - ./Movies:/movies
+      - ./downloads:/downloads #optional torrent downloads folder
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Edmonton
+    volumes:
+      - ./sonarr/config:/config
+      - ./TV Shows:/tv
+      - ./downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+  deluge:
+    image: lscr.io/linuxserver/deluge
+    container_name: deluge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Edmonton
+    volumes:
+      - ./deluge:/config
+      - /mnt/usbHDD/data/downloads:/data/downloads # where all your torrents will download
+    ports:
+      - 8112:8112
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+  tautulli:
+    image: lscr.io/linuxserver/tautulli
+    container_name: tautulli
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Edmonton
+    volumes:
+      - ./tautulli:/config
+    ports:
+      - 8181:8181
+    restart: unless-stopped
+</code></pre><p>Start all docker containers.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>docker-compose up -d
+</span></span></code></pre></div><h3 id=configuring>Configuring</h3><p>You can now access all your web apps and begin to customize.</p><table><thead><tr><th><a href=http://app.plex.tv>http://app.plex.tv</a></th><th>plex</th></tr></thead><tbody><tr><td><a href=http://raspberryipaddress:7878>http://raspberryipaddress:7878</a></td><td>radarr</td></tr><tr><td><a href=http://raspberryipaddress:8989>http://raspberryipaddress:8989</a></td><td>sonarr</td></tr><tr><td><a href=http://raspberryipaddress:8112>http://raspberryipaddress:8112</a></td><td>deluge</td></tr></tbody></table><p>Your <strong>raspberrypiIPADDRESS</strong> can be found using <code>hostname -I | xargs -n 1</code>. It should be the first number unless you have multiple networks setup (e.g. ethernet and wifi).</p><h4 id=plex>Plex</h4><p><a href=http://raspberryipaddress:32400/web>http://raspberryipaddress:32400/web</a></p><p>Add your Movies and TV library. Since we forwarded the folders in docker as <code>- ./TV Shows:/tv</code> this means that all our videos will be in <code>/path/to/docker-compose.yml/folder/TV Shows</code> which Plex sees as <code>/tv</code> so add <code>/tv</code> as the location of all your tv shows and <code>/movies</code> for all your movies.</p><h4 id=radarr>Radarr</h4><p>Go to the web app <a href=http://raspberryipaddress:7878>http://raspberryipaddress:7878</a> and click through the links:</p><p>Settings > Media Management > Add a Root Folder (at the very bottom)</p><p>Add <code>/movies</code></p><p>Go to Settings > Download Clients > hit the big plus</p><p>Add deluge with the following settings:</p><table><thead><tr><th>Host</th><th>raspberrypiIPADDRESS</th></tr></thead><tbody><tr><td>Port</td><td>8112</td></tr></tbody></table><h4 id=sonarr>Sonarr</h4><p>Go to the web app <a href=http://raspberryipaddress:8989>http://raspberryipaddress:8989</a> and click through the links:</p><p>Settings > Media Management > Add a Root Folder (at the very bottom)</p><p>Add <code>/tv</code></p><p>Go to Settings > Download Clients > hit the big plus</p><p>Add deluge with the following settings:</p><table><thead><tr><th>Host</th><th>raspberrypiIPADDRESS</th></tr></thead><tbody><tr><td>Port</td><td>8112</td></tr></tbody></table><h4 id=deluge>Deluge</h4><p>Default user is <strong>admin</strong> and password <strong>deluge</strong></p><p>Open Preferences and change the following:</p><ul><li><p>Downloads</p><p>Change Download to: <code>/downloads</code></p><p>Change Move completed to: <code>/downloads/completed</code> (optional)</p></li></ul><ul><li><p>Interface</p><p>Change <em>webui</em> password.</p></li></ul></div></article><hr><div class=post-info></div></main></div><footer class=footer></footer></div><script type=text/javascript src=/bundle.min.feebdc8d801e3fb1791305e362b6d11557f029604dd5b3c27e2686bc88787ee90ae1ccf0afe81bd7d959d7617cfe1fc73062aa82b4e1fa830d6941193d2cbddf.js integrity="sha512-/uvcjYAeP7F5EwXjYrbRFVfwKWBN1bPCfiaGvIh4fukK4czwr+gb19lZ12F8/h/HMGKqgrTh+oMNaUEZPSy93w=="></script></body></html>
