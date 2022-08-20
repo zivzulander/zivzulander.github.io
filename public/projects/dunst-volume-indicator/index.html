@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="[Matt Morris]">
+<meta name="description" content="Date: August 18, 2022
+Here I will be creating a clever volume indicator for linux systems without a dedicated desktop environment. The end result is to look nice: Full script can be found on my GitHub.
+It must serve the following:
+work with Pipewire work with Dunst allow for incremental increases in volume called from keybinding such as sxhkd round appropriately to save my ocd from seeing numbers like 37% mute if volume reaches 0% Basic setup" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://mattmorris.ca/projects/dunst-volume-indicator/" />
+
+
+    <title>
+        
+            Dunst Volume Indicator for Pipewire :: matt morris  — my personal website
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.4e5c639214707eff609bb55fe49e183dee42258a73bc90e4cc7b0a84f900798a.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Dunst Volume Indicator for Pipewire">
+<meta itemprop="description" content="Date: August 18, 2022
+Here I will be creating a clever volume indicator for linux systems without a dedicated desktop environment. The end result is to look nice: Full script can be found on my GitHub.
+It must serve the following:
+work with Pipewire work with Dunst allow for incremental increases in volume called from keybinding such as sxhkd round appropriately to save my ocd from seeing numbers like 37% mute if volume reaches 0% Basic setup">
+
+<meta itemprop="wordCount" content="456"><meta itemprop="image" content="https://mattmorris.ca"/>
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://mattmorris.ca"/>
+
+<meta name="twitter:title" content="Dunst Volume Indicator for Pipewire"/>
+<meta name="twitter:description" content="Date: August 18, 2022
+Here I will be creating a clever volume indicator for linux systems without a dedicated desktop environment. The end result is to look nice: Full script can be found on my GitHub.
+It must serve the following:
+work with Pipewire work with Dunst allow for incremental increases in volume called from keybinding such as sxhkd round appropriately to save my ocd from seeing numbers like 37% mute if volume reaches 0% Basic setup"/>
+
+
+
+    <meta property="og:title" content="Dunst Volume Indicator for Pipewire" />
+<meta property="og:description" content="Date: August 18, 2022
+Here I will be creating a clever volume indicator for linux systems without a dedicated desktop environment. The end result is to look nice: Full script can be found on my GitHub.
+It must serve the following:
+work with Pipewire work with Dunst allow for incremental increases in volume called from keybinding such as sxhkd round appropriately to save my ocd from seeing numbers like 37% mute if volume reaches 0% Basic setup" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mattmorris.ca/projects/dunst-volume-indicator/" /><meta property="og:image" content="https://mattmorris.ca"/><meta property="article:section" content="projects" />
+
+<meta property="og:site_name" content="matt morris" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__text">matt morris</span>
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/mainpage/about">about</a></li><li><a href="/mainpage/music">music</a></li><li><a href="/mainpage/other">other</a></li><li><a href="/mainpage/contact">contact</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://mattmorris.ca/projects/dunst-volume-indicator/">Dunst Volume Indicator for Pipewire</a></h2>
+
+            
+            
+            
+
+            <div class="post-content">
+                <p>Date: <!-- raw HTML omitted --><!-- raw HTML omitted -->August 18, 2022<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>Here I will be creating a clever volume indicator for linux systems without a dedicated desktop environment. The end result is to look nice:
+<img src="/blog-images/volume.png" alt=""></p>
+<p>Full script can be found on my GitHub.</p>
+<p>It must serve the following:</p>
+<ul>
+<li>work with <code>Pipewire</code></li>
+<li>work with <code>Dunst</code></li>
+<li>allow for incremental increases in volume called from keybinding such as <code>sxhkd</code></li>
+<li>round appropriately to save my ocd from seeing numbers like 37%</li>
+<li>mute if volume reaches 0%</li>
+</ul>
+<p>Basic setup</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -eux
+</span></span></code></pre></div><p>Arbitrary but unique message tag</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>msgTag<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;myvolume&#34;</span>
+</span></span></code></pre></div><p>Query the current volume.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>currentvolume<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pactl get-sink-volume @DEFAULT_SINK@ | awk <span style="color:#e6db74">&#39;{print $5}&#39;</span> | grep -Eo <span style="color:#e6db74">&#39;[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><p>Functions to round volume up or down to the nearest 10th if changing volume by large factor. (e.g. if volume is at 34%, increase it to 40% or decrease to 30%). Also, the function to mute.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>round_down<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>     pactl set-sink-volume @DEFAULT_SINK@ <span style="color:#66d9ef">$((</span> $currentvolume <span style="color:#f92672">-</span> <span style="color:#e6db74">${</span>currentvolume:(-1)<span style="color:#e6db74">}</span> <span style="color:#66d9ef">))</span>%
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>round_up<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>     pactl set-sink-volume @DEFAULT_SINK@ <span style="color:#66d9ef">$((</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> $currentvolume <span style="color:#f92672">-</span> <span style="color:#e6db74">${</span>currentvolume:(-1)<span style="color:#e6db74">}</span> <span style="color:#66d9ef">))</span>%
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mute<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    pactl set-sink-volume @DEFAULT_SINK@ 10%
+</span></span><span style="display:flex;"><span>    pactl set-sink-mute @DEFAULT_SINK@ <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>If inc/decreasing volume, un-mute first.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eq <span style="color:#e6db74">&#39;[+|-][0-9]+&#39;</span> ; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    pactl set-sink-mute @DEFAULT_SINK@ off
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><p>If changing by a large number (≥10) and the current volume is not a factor of 10 then it should round. Input is usually something like</p>
+<p><code>volumeindicator set-sink-volume @DEFAULT_SINK@ +10%</code></p>
+<p>so we check for those two conditions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">${</span>currentvolume:(-1)<span style="color:#e6db74">}</span> !<span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>  <span style="color:#f92672">&amp;&amp;</span> <span style="color:#66d9ef">$(</span>echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eo <span style="color:#e6db74">&#39;[0-9]+&#39;</span> <span style="color:#66d9ef">)</span> -ge <span style="color:#ae81ff">10</span> <span style="color:#f92672">]]</span> ; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span> -n <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eo <span style="color:#e6db74">&#39;\-[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> round_down
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span> -n <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eo <span style="color:#e6db74">&#39;\+[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> round_up
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>       pactl $@
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span></code></pre></div><p>Get the new volume.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>newvolume<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pactl get-sink-volume @DEFAULT_SINK@ | awk <span style="color:#e6db74">&#39;{print $5}&#39;</span> | grep -Eo <span style="color:#e6db74">&#39;[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span></code></pre></div><p>If volume is 0% don&rsquo;t change the volume, just mute.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[[</span> $newvolume <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">]]</span> <span style="color:#f92672">&amp;&amp;</span> mute
+</span></span></code></pre></div><p>Execute <code>dunst</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>dunstify -a <span style="color:#e6db74">&#34;Volume&#34;</span> -u low -i audio-volume-high -h string:x-dunst-stack-tag:$msgTag <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -h int:value:<span style="color:#e6db74">&#34;</span>$newvolume<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;Vol:&#34;</span>
+</span></span></code></pre></div><p>Full script:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>set -eux
+</span></span><span style="display:flex;"><span>msgTag<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;myvolume&#34;</span>
+</span></span><span style="display:flex;"><span>currentvolume<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pactl get-sink-volume @DEFAULT_SINK@ | awk <span style="color:#e6db74">&#39;{print $5}&#39;</span> | grep -Eo <span style="color:#e6db74">&#39;[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>round_down<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>     pactl set-sink-volume @DEFAULT_SINK@ <span style="color:#66d9ef">$((</span> $currentvolume <span style="color:#f92672">-</span> <span style="color:#e6db74">${</span>currentvolume:(-1)<span style="color:#e6db74">}</span> <span style="color:#66d9ef">))</span>%
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>round_up<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>     pactl set-sink-volume @DEFAULT_SINK@ <span style="color:#66d9ef">$((</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> $currentvolume <span style="color:#f92672">-</span> <span style="color:#e6db74">${</span>currentvolume:(-1)<span style="color:#e6db74">}</span> <span style="color:#66d9ef">))</span>%
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># unmute first if increasing vol</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eq <span style="color:#e6db74">&#39;[+|-][0-9]+&#39;</span> ; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    pactl set-sink-mute @DEFAULT_SINK@ off
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[[</span> <span style="color:#e6db74">${</span>currentvolume:(-1)<span style="color:#e6db74">}</span> !<span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>  <span style="color:#f92672">&amp;&amp;</span> <span style="color:#66d9ef">$(</span>echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eo <span style="color:#e6db74">&#39;[0-9]+&#39;</span> <span style="color:#66d9ef">)</span> -ge <span style="color:#ae81ff">10</span> <span style="color:#f92672">]]</span> ; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span> -n <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eo <span style="color:#e6db74">&#39;\-[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> round_down
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">[</span> -n <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>echo <span style="color:#e6db74">&#34;</span>$@<span style="color:#e6db74">&#34;</span> | grep -Eo <span style="color:#e6db74">&#39;\+[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> round_up
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>       pactl $@
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>newvolume<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pactl get-sink-volume @DEFAULT_SINK@ | awk <span style="color:#e6db74">&#39;{print $5}&#39;</span> | grep -Eo <span style="color:#e6db74">&#39;[0-9]+&#39;</span> <span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>dunstify -a <span style="color:#e6db74">&#34;Volume&#34;</span> -u low -i audio-volume-high -h string:x-dunst-stack-tag:$msgTag <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -h int:value:<span style="color:#e6db74">&#34;</span>$newvolume<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;Vol:&#34;</span>
+</span></span></code></pre></div>
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.feebdc8d801e3fb1791305e362b6d11557f029604dd5b3c27e2686bc88787ee90ae1ccf0afe81bd7d959d7617cfe1fc73062aa82b4e1fa830d6941193d2cbddf.js" integrity="sha512-/uvcjYAeP7F5EwXjYrbRFVfwKWBN1bPCfiaGvIh4fukK4czwr&#43;gb19lZ12F8/h/HMGKqgrTh&#43;oMNaUEZPSy93w=="></script>
+
+
+
+    </body>
+</html>

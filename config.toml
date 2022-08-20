@@ -1,0 +1,103 @@
+baseURL = 'https://zivzulander.github.io'
+languageCode = 'en-us'
+title = 'matt morris'
+theme = "hello-friend-ng"
+paginate = 10
+
+[author]
+  name = "Matt Morris"
+
+[params]
+  dateform        = "Jan 2, 2006"
+  dateformShort   = "Jan 2"
+  dateformNum     = "2006-01-02"
+  dateformNumTime = "2006-01-02 15:04"
+  canonifyURLs = true
+  # backgroundImage = "/headshots/matt7.jpg"
+  backgroundImage = ""
+  enableThemeToggle = true
+  enableGlobalLanguageMenu = false
+
+  homeSubtitle = "composer, pianist"
+
+  # Set disableReadOtherPosts to true in order to hide the links to other posts.
+  disableReadOtherPosts = false
+
+  enableSharingButtons = false
+
+  # Metadata mostly used in document's head
+  description = "My website"
+  keywords = "homepage, blog"
+  images = [""]
+
+  [params.logo]
+    logoMark     = ""
+    logoText     = "$ cd /home/"
+    logoHomeLink = ""
+    # Set true to remove the logo cursor entirely.
+    # logoCursorDisabled = false
+    # Set to a valid CSS color to change the cursor in the logo.
+    # logoCursorColor    = "#67a2c9"
+    # Set to a valid CSS time value to change the animation duration, "0s" to disable.
+    logoCursorAnimate  = "0s"
+  # [params.portrait]
+  #   path     = "/img/image.jpg"
+  #   alt      = "Portrait"
+  #   maxWidth = "50px"
+
+[taxonomies]
+    category = "personal"
+    tag      = "tags"
+    series   = "series"
+
+[languages]
+  [languages.en]
+    title = "matt morris"
+    subtitle = "my personal website"
+    keywords = ""
+    copyright = ''
+    readOtherPosts = "Read other posts"
+
+    [languages.en.params.logo]
+      logoText = "matt morris"
+      logoHomeLink = "/"
+    # or
+    #
+    # path = "/img/your-example-logo.svg"
+    # alt = "Your example logo alt text"
+
+  # And you can even create generic menu
+  [[menu.main]]
+    identifier = "about"
+    name       = "about"
+    url        = "/mainpage/about"
+    weight     = 1
+  [[menu.main]]
+    identifier = "music"
+    name       = "music"
+    url        = "/mainpage/music"
+    weight     = 2
+  [[menu.main]]
+    identifier = "other"
+    name       = "other"
+    url        = "/mainpage/other"
+    weight     = 3
+  [[menu.main]]
+    identifier = "contact"
+    name       = "contact"
+    url        = "/mainpage/contact"
+    weight     = 4
+
+[privacy]
+  [privacy.disqus]
+    disable = true
+  [privacy.googleAnalytics]
+    disable = true
+  [privacy.instagram]
+    disable = true
+  [privacy.twitter]
+    disable = true
+  [privacy.vimeo]
+    disable = true
+  [privacy.youtube]
+    disable = true

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="[Matt Morris]">
+<meta name="description" content="Updated on August 20, 2022 for Seafile Server 9.0.2 on Raspberry Pi Bullseye.
+Seafile is a free and open source file syncing tool that can be self-hosted on a raspberry pi. Below is a brief comparison of similar programs that are also free and self-hostable on a pi:
+Program Share files with others Apps Speed Seafile yes anything fast Nextcloud yes anything slow Syncthing no poor iOS support fast We&amp;rsquo;ll be installing Seafile on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://mattmorris.ca/projects/seafile/" />
+
+
+    <title>
+        
+            Install Seafile on a Raspberry Pi :: matt morris  — my personal website
+        
+    </title>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
+    type="text/css">
+
+
+
+<link rel="stylesheet" href="/main.4e5c639214707eff609bb55fe49e183dee42258a73bc90e4cc7b0a84f900798a.css">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+<meta itemprop="name" content="Install Seafile on a Raspberry Pi">
+<meta itemprop="description" content="Updated on August 20, 2022 for Seafile Server 9.0.2 on Raspberry Pi Bullseye.
+Seafile is a free and open source file syncing tool that can be self-hosted on a raspberry pi. Below is a brief comparison of similar programs that are also free and self-hostable on a pi:
+Program Share files with others Apps Speed Seafile yes anything fast Nextcloud yes anything slow Syncthing no poor iOS support fast We&rsquo;ll be installing Seafile on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain.">
+
+<meta itemprop="wordCount" content="1401"><meta itemprop="image" content="https://mattmorris.ca"/>
+<meta itemprop="keywords" content="" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://mattmorris.ca"/>
+
+<meta name="twitter:title" content="Install Seafile on a Raspberry Pi"/>
+<meta name="twitter:description" content="Updated on August 20, 2022 for Seafile Server 9.0.2 on Raspberry Pi Bullseye.
+Seafile is a free and open source file syncing tool that can be self-hosted on a raspberry pi. Below is a brief comparison of similar programs that are also free and self-hostable on a pi:
+Program Share files with others Apps Speed Seafile yes anything fast Nextcloud yes anything slow Syncthing no poor iOS support fast We&rsquo;ll be installing Seafile on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain."/>
+
+
+
+    <meta property="og:title" content="Install Seafile on a Raspberry Pi" />
+<meta property="og:description" content="Updated on August 20, 2022 for Seafile Server 9.0.2 on Raspberry Pi Bullseye.
+Seafile is a free and open source file syncing tool that can be self-hosted on a raspberry pi. Below is a brief comparison of similar programs that are also free and self-hostable on a pi:
+Program Share files with others Apps Speed Seafile yes anything fast Nextcloud yes anything slow Syncthing no poor iOS support fast We&rsquo;ll be installing Seafile on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://mattmorris.ca/projects/seafile/" /><meta property="og:image" content="https://mattmorris.ca"/><meta property="article:section" content="projects" />
+
+<meta property="og:site_name" content="matt morris" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="header__inner">
+        <a href="/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <span class="logo__text">matt morris</span>
+            </span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                <nav class="menu">
+    <ul class="menu__inner"><li><a href="/mainpage/about">about</a></li><li><a href="/mainpage/music">music</a></li><li><a href="/mainpage/other">other</a></li><li><a href="/mainpage/contact">contact</a></li>
+    </ul>
+</nav>
+
+                <span class="menu-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </span>
+            
+                <span class="theme-toggle not-selectable"><svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+   <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+   3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+   13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+ </svg></span>
+        </span>
+    </span>
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://mattmorris.ca/projects/seafile/">Install Seafile on a Raspberry Pi</a></h2>
+
+            
+            
+            
+
+            <div class="post-content">
+                <!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>Updated on August 20, 2022 for <a href="https://github.com/haiwen/seafile-rpi">Seafile Server 9.0.2</a> on Raspberry Pi Bullseye.</p>
+<!-- raw HTML omitted -->
+<p><a href="https://www.seafile.com/en/home/">Seafile</a> is a free and open source file syncing tool that can be self-hosted on a raspberry pi. Below is a brief comparison of similar programs that are also free and self-hostable on a pi:</p>
+<table>
+<thead>
+<tr>
+<th>Program</th>
+<th>Share files with others</th>
+<th>Apps</th>
+<th>Speed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Seafile</td>
+<td>yes</td>
+<td>anything</td>
+<td>fast</td>
+</tr>
+<tr>
+<td>Nextcloud</td>
+<td>yes</td>
+<td>anything</td>
+<td>slow</td>
+</tr>
+<tr>
+<td>Syncthing</td>
+<td>no</td>
+<td>poor iOS support</td>
+<td>fast</td>
+</tr>
+</tbody>
+</table>
+<p>We&rsquo;ll be installing <strong>Seafile</strong> on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain. There are instructions on <a href="https://manual.seafile.com/deploy/">Seafile&rsquo;s website</a> but the script and docker image don&rsquo;t seem to work on with the pi build. We&rsquo;ll be doing it all manually.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>Click <a href="/projects/setup_pi/">here</a> to setup your pi with 64-bit <strong>Raspberry Pi OS</strong>.</p>
+<h3 id="getting-started-with-your-own-domain">Getting started with your own domain</h3>
+<p>For security we&rsquo;re only going to access Seafile though https. You&rsquo;ll need your own domain. I use <a href="https://www.namesilo.com/">namesilo</a> but there are many options. A domain such as yourdomain.xyz is about $1/year. You can even use the same address&rsquo;s subdomains for other applications such as bitwarden.yourdomain.xyz.</p>
+<p>Once you have this you need to point dns records to your public ip. How this is done is a little different for each site but there should be an option to manage dns where you can add an <code>A record</code> pointing to your <a href="https://whatismyipaddress.com/">public IPv4 address</a> and a <code>AAAA record</code> pointing to your IPv6 address. Something like this:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Domain</th>
+<th>Data</th>
+<th>TTL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td></td>
+<td>12.34.56.78</td>
+<td>1 hour</td>
+</tr>
+<tr>
+<td>AAAA</td>
+<td></td>
+<td>1234:5a78:b90:c123::d4e5</td>
+<td>1 hour</td>
+</tr>
+</tbody>
+</table>
+<p>If you leave the <em>domain</em> (sometimes called <em>hostname</em>) blank then this will point to <em>yourdomain.xyz</em>. If you add a domain like <em>seafile</em> then your Seafile will be on <em>seafile.yourdomain.xyz</em>. Which you choose is up to you.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Domain</th>
+<th>Data</th>
+<th>TTL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>seafile</td>
+<td>12.34.56.78</td>
+<td>1 hour</td>
+</tr>
+<tr>
+<td>AAAA</td>
+<td>seafile</td>
+<td>1234:5a78:b90:c123::d4e5</td>
+<td>1 hour</td>
+</tr>
+</tbody>
+</table>
+<p>It can take a few minutes to an hour for your dns server to refresh which is why we&rsquo;re doing this step first. You can run <code>ping -c1 seafile.yourdomain.xyz</code> to see if the IP matches your home ip address.</p>
+<h3 id="install-mysql">Install MySQL</h3>
+<p>Update your pi if you didn&rsquo;t already..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt update <span style="color:#f92672">&amp;&amp;</span> sudo apt upgrade -y
+</span></span></code></pre></div><p>Install dependencies for <code>MySQL</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get install -y python3 python3-setuptools python3-pip default-libmysqlclient-dev python3-pymysql memcached libmemcached-dev
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo pip3 install --timeout<span style="color:#f92672">=</span><span style="color:#ae81ff">3600</span> django<span style="color:#f92672">==</span>3.2.* Pillow pylibmc captcha jinja2 sqlalchemy<span style="color:#f92672">==</span>1.4.3 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    django-pylibmc django-simple-captcha python3-ldap mysqlclient pycryptodome<span style="color:#f92672">==</span>3.12.0 cffi<span style="color:#f92672">==</span>1.14.0 lxml
+</span></span></code></pre></div><p>Set a MySQL root password which you&rsquo;ll be asked for later. You can just press enter on most other questions to accept the default response.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo mysql_secure_installation
+</span></span></code></pre></div><h3 id="download-seafile">Download Seafile</h3>
+<p>Make a directory for Seafile to be installed to.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir /mnt/usb/seafile
+</span></span></code></pre></div><p>Download the Seafile script.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget -q -O- <span style="color:#e6db74">&#34;https://github.com/haiwen/seafile-rpi/releases/download/v9.0.2/seafile-server-9.0.2-bullseye-arm64v8l.tar.gz&#34;</span> | tar -xz -C /mnt/usb/seafile
+</span></span></code></pre></div><h3 id="install-seafile">Install Seafile</h3>
+<p>Run the installation script.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd seafile-server-9.0.2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>./setup-seafile-mysql.sh
+</span></span></code></pre></div><p>Choose <code>[1] Create new ccnet/seafile/seahub databases</code>. Most of the questions have a default answer which is a good idea to use. Just hit enter on those. Use the root password from when you typed <code>sudo mysql_secure_installation</code>.</p>
+<h3 id="forward-ports-on-your-router">Forward Ports on your router</h3>
+<p>We&rsquo;re using a reverse proxy so we only forward port 443 on your router to your raspberry pi&rsquo;s local ip.</p>
+<h3 id="configuring-seafile">Configuring Seafile</h3>
+<p>Some config files need to be changed since we&rsquo;ll be accessing Seafile from our custom domain with https.</p>
+<h4 id="ccnet-dot-conf">ccnet.conf</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nano /opt/seafile/conf/ccnet.conf
+</span></span></code></pre></div><p>Change <code>SERVICE_URL</code> to your domain. e.g.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>SERVICE_URL <span style="color:#f92672">=</span> https://seafile.example.com
+</span></span></code></pre></div><h4 id="seahub-settings-dot-py">seahub_settings.py</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nano /opt/seafile/conf/seahub_settings.py
+</span></span></code></pre></div><p>Change/add <code>FILE_SERVER_ROOT</code> to your domain and change your timezone.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>FILE_SERVER_ROOT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://seafile.example.com/seafhttp&#39;</span>
+</span></span><span style="display:flex;"><span>TIMEZONE <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;America/Denver&#39;</span>
+</span></span></code></pre></div><h4 id="seafdav-dot-conf">seafdav.conf</h4>
+<p>If you want webdav (you probably do) then change <code>enabled</code> to <code>true</code> and change the location of the folder with <code>share_name = /seafdav</code>. This will give you a working webdav server which is more widely available for syncing with apps. You can access this through <a href="https://seafile.example.com/seafdav">https://seafile.example.com/seafdav</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>nano /opt/seafile/conf/seafdav.conf
+</span></span></code></pre></div><h3 id="if-you-don-t-plan-on-using-https">If you don&rsquo;t plan on using https</h3>
+<p>This is a much less secure method and you will lose out on a lot of the benefits of Seafile such as sending links to others and accessing it remotely without VPNs but here it is.</p>
+<h3 id="reverse-proxy">Reverse Proxy</h3>
+<p>This forwards http requests from <a href="https://yourdomain.xyz">https://yourdomain.xyz</a> on port 443 to wherever Seafile is running. In our case, <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>.</p>
+<p>We&rsquo;ll go back the <code>pi</code> user to run the next steps.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>exit
+</span></span></code></pre></div><h4 id="https-certificate-from-letsencrypt">HTTPS certificate from <a href="https://letsencrypt.org/">letsencrypt</a></h4>
+<p>Change YOURDOMAIN. It will place the files in <code>/etc/letsencrypt/live/YOURDOMAIN.XYZ/</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install python3-certbot-nginx/stable -y
+</span></span><span style="display:flex;"><span>sudo certbot certonly --nginx --domain YOURDOMAIN.XYZ
+</span></span></code></pre></div><h4 id="install-nginx">Install <code>nginx</code></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install nginx
+</span></span><span style="display:flex;"><span>sudo rm /etc/nginx/sites-<span style="color:#f92672">{</span>enabled,available<span style="color:#f92672">}</span>/default
+</span></span><span style="display:flex;"><span>touch /etc/nginx/sites-available/seafile.conf
+</span></span><span style="display:flex;"><span>sudo ln -s /etc/nginx/sites-available/seafile.conf /etc/nginx/sites-enabled/seafile.conf
+</span></span></code></pre></div><h4 id="configuring-nginx">Configuring <code>nginx</code></h4>
+<p>This is the trickiest part if it&rsquo;s new to you. Copy the example below which is pieced together from <a href="https://manual.seafile.com/deploy/https_with_nginx/#modifying-nginx-configuration-file">Seafile&rsquo;s website</a> and adjust appropriately. At the very least, everything is ALL CAPS should be changed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -e /etc/nginx/sites-available/seafile.conf
+</span></span></code></pre></div><p>Here are some things to watch out for:</p>
+<ul>
+<li>Replace <em>seafile.example.com</em> with your domain each time it comes up</li>
+<li>Change <code>root = /opt/seafile/seafile-server-latest/seahub;</code> in <code>location /media</code> to where you&rsquo;ll store all your files. I have this on an external drive <code>root = /mnt/usbHDD/seafile;</code></li>
+<li>This example contains a webdav config under <code>location /seafdav</code> so you can remove those lines if you aren&rsquo;t using it.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-nginx" data-lang="nginx"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">log_format</span> <span style="color:#e6db74">seafileformat</span> <span style="color:#e6db74">&#39;</span>$http_x_forwarded_for $remote_addr <span style="color:#e6db74">[</span>$time_local] <span style="color:#e6db74">&#34;</span>$request&#34; $status $body_bytes_sent <span style="color:#e6db74">&#34;</span>$http_referer&#34; <span style="color:#e6db74">&#34;</span>$http_user_agent&#34; $upstream_response_time&#39;;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">server</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">listen</span>       <span style="color:#ae81ff">80</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server_name</span>  <span style="color:#e6db74">SEAFILE.EXAMPLE.COM</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">rewrite</span> <span style="color:#e6db74">^</span> <span style="color:#e6db74">https://</span>$http_host$request_uri? <span style="color:#e6db74">permanent</span>;    <span style="color:#75715e"># Forced redirect from HTTP to HTTPS
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server_tokens</span> <span style="color:#66d9ef">off</span>;      <span style="color:#75715e"># Prevents the Nginx version from being displayed in the HTTP response header
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">server</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">listen</span> <span style="color:#ae81ff">443</span> <span style="color:#e6db74">ssl</span> <span style="color:#e6db74">http2</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">listen</span> <span style="color:#e6db74">[::]:443</span> <span style="color:#e6db74">ssl</span> <span style="color:#e6db74">http2</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ssl_certificate</span> <span style="color:#e6db74">/etc/letsencrypt/live/SEAFILE.EXAMPLE.COM/fullchain.pem</span>;    <span style="color:#75715e"># Path to your fullchain.pem
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">ssl_certificate_key</span> <span style="color:#e6db74">/etc/letsencrypt/live/SEAFILE.EXAMPLE.COM/privkey.pem</span>;  <span style="color:#75715e"># Path to your privkey.pem
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">server_name</span> <span style="color:#e6db74">SEAFILE.EXAMPLE.COM</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">server_tokens</span> <span style="color:#66d9ef">off</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">/</span> {
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">proxy_pass</span>         <span style="color:#e6db74">http://127.0.0.1:8000</span>;
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">proxy_set_header</span>   <span style="color:#e6db74">Host</span> $host;
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">proxy_set_header</span>   <span style="color:#e6db74">X-Real-IP</span> $remote_addr;
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">proxy_set_header</span>   <span style="color:#e6db74">X-Forwarded-For</span> $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">proxy_set_header</span>   <span style="color:#e6db74">X-Forwarded-Host</span> $server_name;
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">proxy_read_timeout</span>  <span style="color:#e6db74">1200s</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e"># used for view/edit office file via Office Online Server
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>         <span style="color:#f92672">client_max_body_size</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">access_log</span>      <span style="color:#e6db74">/var/log/nginx/seahub.access.log</span> <span style="color:#e6db74">seafileformat</span>;
+</span></span><span style="display:flex;"><span>         <span style="color:#f92672">error_log</span>       <span style="color:#e6db74">/var/log/nginx/seahub.error.log</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">/seafhttp</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">rewrite</span> <span style="color:#e6db74">^/seafhttp(.*)</span>$ $1 <span style="color:#e6db74">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_pass</span> <span style="color:#e6db74">http://127.0.0.1:8082</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">client_max_body_size</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_set_header</span>   <span style="color:#e6db74">X-Forwarded-For</span> $proxy_add_x_forwarded_for;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_connect_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_read_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_send_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_request_buffering</span> <span style="color:#66d9ef">off</span>; <span style="color:#75715e"># enables large file uploads
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">send_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">access_log</span>      <span style="color:#e6db74">/var/log/nginx/seafhttp.access.log</span> <span style="color:#e6db74">seafileformat</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">error_log</span>       <span style="color:#e6db74">/var/log/nginx/seafhttp.error.log</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">location</span> <span style="color:#e6db74">/seafdav</span> {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">client_max_body_size</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_connect_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_read_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_send_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">send_timeout</span>  <span style="color:#e6db74">36000s</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">proxy_request_buffering</span> <span style="color:#66d9ef">off</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">access_log</span>      <span style="color:#e6db74">/var/log/nginx/seafdav.access.log</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">error_log</span>       <span style="color:#e6db74">/var/log/nginx/seafdav.error.log</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">location</span> <span style="color:#e6db74">/media</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">root</span> <span style="color:#e6db74">/mnt/usb/seafile/seafile-server-latest/seahub</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Start <code>nginx.</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl enable --now nginx
+</span></span></code></pre></div><h3 id="starting-seafile">Starting Seafile</h3>
+<p>We want Seafile to start on boot. Create these 2 systemd unit files.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -e /etc/systemd/system/seafile.service
+</span></span></code></pre></div><p>Paste in the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Unit<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Description<span style="color:#f92672">=</span>Seafile
+</span></span><span style="display:flex;"><span>After<span style="color:#f92672">=</span>network.target mysql.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Service<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Type<span style="color:#f92672">=</span>forking
+</span></span><span style="display:flex;"><span>ExecStart<span style="color:#f92672">=</span>/opt/seafile/seafile-server-latest/seafile.sh start
+</span></span><span style="display:flex;"><span>ExecStop<span style="color:#f92672">=</span>/opt/seafile/seafile-server-latest/seafile.sh stop
+</span></span><span style="display:flex;"><span>LimitNOFILE<span style="color:#f92672">=</span>infinity
+</span></span><span style="display:flex;"><span>User<span style="color:#f92672">=</span>seafile
+</span></span><span style="display:flex;"><span>Group<span style="color:#f92672">=</span>seafile
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Install<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>WantedBy<span style="color:#f92672">=</span>multi-user.target
+</span></span></code></pre></div><p>And</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -e /etc/systemd/system/seahub.service
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>Unit<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Description<span style="color:#f92672">=</span>Seafile hub
+</span></span><span style="display:flex;"><span>After<span style="color:#f92672">=</span>network.target seafile.service
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Service<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>Environment<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;LC_ALL=C&#34;</span>
+</span></span><span style="display:flex;"><span>Type<span style="color:#f92672">=</span>forking
+</span></span><span style="display:flex;"><span>ExecStart<span style="color:#f92672">=</span>/opt/seafile/seafile-server-latest/seahub.sh start
+</span></span><span style="display:flex;"><span>ExecStop<span style="color:#f92672">=</span>/opt/seafile/seafile-server-latest/seahub.sh stop
+</span></span><span style="display:flex;"><span>User<span style="color:#f92672">=</span>seafile
+</span></span><span style="display:flex;"><span>Group<span style="color:#f92672">=</span>seafile
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Install<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>WantedBy<span style="color:#f92672">=</span>multi-user.target
+</span></span></code></pre></div><h4 id="start-and-enable-seafile">Start and enable Seafile</h4>
+<p>have to run seahub first</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo systemctl enable --now seafile seahub
+</span></span></code></pre></div><p>You should now be able to access Seafile from the https domain. Login with the username and password you provided to the <code>./setup-seafile-mysql.sh</code> script.</p>
+<h3 id="extra-stuff">Extra Stuff</h3>
+<h4 id="enable-two-factor-authentication">Enable Two Factor Authentication</h4>
+<p><strong>NOTE: Does not work with WebDAV</strong></p>
+<p>Click on your avatar and got to <em>System Admin &gt; Settings</em>.</p>
+<p>Check the box titled <code>Enable two factor authentication</code>.</p>
+<h4 id="add-more-users">Add more users</h4>
+<p>Click on your avatar and got to <em>System Admin &gt; Users</em>.</p>
+<h4 id="enable-fail2ban">Enable Fail2Ban</h4>
+<p><a href="https://manual.seafile.com/security/fail2ban/">Read more here.</a></p>
+<p>Make sure you added your timezone when changing <a href="#seahub-settings-dot-py">seahub_settings.py</a></p>
+<p>Install it and edit the <code>jail.local</code> file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt install fail2ban
+</span></span><span style="display:flex;"><span>sudo cp /etc/fail2ban/jail.<span style="color:#f92672">{</span>conf,local<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>sudo -e /etc/fail2ban/jail.local
+</span></span></code></pre></div><p>Add the following at the bottom changing the logpath if needed.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#f92672">[</span>seafile<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>enabled  <span style="color:#f92672">=</span> true
+</span></span><span style="display:flex;"><span>port     <span style="color:#f92672">=</span> http,https
+</span></span><span style="display:flex;"><span>filter   <span style="color:#f92672">=</span> seafile-auth
+</span></span><span style="display:flex;"><span>logpath  <span style="color:#f92672">=</span> /opt/seafile/logs/seahub.log
+</span></span><span style="display:flex;"><span>maxretry <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -e /etc/fail2ban/filter.d/seafile-auth.conf
+</span></span></code></pre></div><p>Add the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Fail2Ban filter for seafile</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>INCLUDES<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Read common prefixes. If any customizations available -- read them from</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># common.local</span>
+</span></span><span style="display:flex;"><span>before <span style="color:#f92672">=</span> common.conf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>Definition<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>_daemon <span style="color:#f92672">=</span> seaf-server
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>failregex <span style="color:#f92672">=</span> Login attempt limit reached.*, ip: &lt;HOST&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ignoreregex <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># DEV Notes:</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># pattern :     2015-10-20 15:20:32,402 [WARNING] seahub.auth.views:155 login Login attempt limit reached, username: &lt;user&gt;, ip: 1.2.3.4, attemps: 3</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#       2015-10-20 17:04:32,235 [WARNING] seahub.auth.views:163 login Login attempt limit reached, ip: 1.2.3.4, attempts: 3</span>
+</span></span></code></pre></div><p>Restart <code>fail2ban</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo fail2ban-client reload
+</span></span></code></pre></div><h4 id="automated-garbage-collection">Automated Garbage Collection</h4>
+<p>i.e. emptying the trash</p>
+<p>We&rsquo;ll have to write a little script for this since we want to automate it and it requires a few steps.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -e /home/pi/.local/bin/cleanup_seafile
+</span></span></code></pre></div><p>Paste in the following. Change the path to Seafile if necessary.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#!/bin/bash
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># stop the server</span>
+</span></span><span style="display:flex;"><span>systemctl stop seafile seahub
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sleep <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo -u seafile /opt/seafile/seafile-server-latest/seaf-gc.sh
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sleep <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># start the server</span>
+</span></span><span style="display:flex;"><span>systemctl start seafile seahub
+</span></span></code></pre></div><p>Make this file executable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo chmod +x /home/pi/.local/bin/cleanup_seafile
+</span></span></code></pre></div><p>Again, we&rsquo;ll use <code>crontab</code> (still in user <code>pi</code>) to automate running this script.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>crontab -e
+</span></span></code></pre></div><p>Run at 4am first of each month.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4</span> * */1 *  sudo /home/pi/.local/bin/cleanup_seafile
+</span></span></code></pre></div>
+            </div>
+        </article>
+
+        <hr />
+
+        <div class="post-info">
+            
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        
+
+
+
+<script type="text/javascript" src="/bundle.min.feebdc8d801e3fb1791305e362b6d11557f029604dd5b3c27e2686bc88787ee90ae1ccf0afe81bd7d959d7617cfe1fc73062aa82b4e1fa830d6941193d2cbddf.js" integrity="sha512-/uvcjYAeP7F5EwXjYrbRFVfwKWBN1bPCfiaGvIh4fukK4czwr&#43;gb19lZ12F8/h/HMGKqgrTh&#43;oMNaUEZPSy93w=="></script>
+
+
+
+    </body>
+</html>

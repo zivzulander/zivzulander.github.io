@@ -1,0 +1,38 @@
+#+title: CMS Webpage
+#+author: Matt Morris
+#+date: {{{time(%B %d\, %Y)}}}
+#+date_created: [2022-08-16 Tue]
+#+startup: showall customtime entitiesplain
+#+options: toc:nil tasks:nil
+#+export_file_name:/home/matt/documents/projects/websites/cms/
+
+#+hugo_base_dir: /home/matt/documents/projects/websites/cms/
+#+hugo_section: mainpage
+* homepage
+:PROPERTIES:
+:EXPORT_FILE_NAME: endeavours
+:EXPORT_DATE: {{{time(%B %-e, %Y)}}}
+:END:
+
+Mandy and Alicia Have a Lot of Feelings
+And that's okay.
+
+Colour Me Sad is an exploration of emotion and colours for preschool and early elementary aged children. It experiments with ways to communicate feelings, spaces to witness emotion and our preconceived notions about the colours tied to emotions.
+* Alicia Ward
+
+Profession: Dancer
+
+Favourite Colour: Blue & Purple
+
+When you're sad, what cheers you up?
+
+Coffee, Reading & Spending Time with My Friends
+* Mandy Morris
+
+Profession: Musician
+
+Favourite Colour: Yellow
+
+When you're sad, what cheers you up?
+
+Hugs, Painting & Yoga
