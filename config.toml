@@ -103,4 +103,4 @@ paginate = 10
 
 [markup]
   [markup.highlight]
-    style = 'monokai'
+    style = 'dracula'
