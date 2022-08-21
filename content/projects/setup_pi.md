@@ -1,11 +1,9 @@
 +++
 title = "Setup Your Raspberry Pi"
 author = ["Matt Morris"]
-draft = true
+tags = ["linux", "raspberrypi", "tutorial"]
+draft = false
 +++
-
-Date: <span class="timestamp-wrapper"><span class="timestamp">August 20, 2022</span></span>
-
 
 ## Installing the OS to an SD Card {#installing-the-os-to-an-sd-card}
 
@@ -14,17 +12,20 @@ Install the [Raspberry Pi Imager](https://www.raspberrypi.com/software/). Under 
 {{< figure src="/blog-images/rpi-imager.png" >}}
 
 
+## Find your pi's ip address {#find-your-pi-s-ip-address}
+
+[Raspberry Pi Documentation - Remote Access](https://www.raspberrypi.com/documentation/computers/remote-access.html#ip-address)
+Boot up the pi and find your new ip address. There are a few ways to do this:
+
+-   Using the [Adafruit-Pi-Finder](https://github.com/adafruit/Adafruit-Pi-Finder/).
+-   using `nmap -sn 10.0.0.1/24 | grep -Po '(?<=Nmap scan report for ).*'`
+    Replace `10.0.0.1/24` with your local network's range.
+-   you can also try to ping your pi using its hostname `ping raspberrypi`
+
+
 ## First steps {#first-steps}
 
 Once you have your pi booted up and ssh'd into it you'll want to update your pi (may take a while).
-
-<style>.org-center { margin-left: auto; margin-right: auto; text-align: center; }</style>
-
-<div class="org-center">
-
-_If you aren't sure how to find your pi's ip address, check the_ [official documentation.](https://www.raspberrypi.com/documentation/computers/remote-access.html#ip-address)
-
-</div>
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -69,7 +70,7 @@ mmcblk0
 For me it's `sda1`  on the 2nd line so we use `/dev/sda1` (it will always be `/dev/sdX` followed by a number where X is a lowercase letter). Copy this UUID which we'll use in a sec.
 
 
-### Format the drive (skip to [Mount the usb drive](#mount-the-usb-drive) if you don't need this) {#format-the-drive--skip-to-mount-the-usb-drive--org07bfaaf--if-you-don-t-need-this}
+### Format the drive (skip to [Mount the usb drive](#mount-the-usb-drive) if you don't need this) {#format-the-drive--skip-to-mount-the-usb-drive--org260b033--if-you-don-t-need-this}
 
 It's always good to start with a fresh drive and it will be a lot easier if it's not formatted for a macos or Windows filesystem.
 
@@ -110,7 +111,7 @@ sudo mkdir /mnt/usb && sudo mount /dev/sda1 /mnt/usb
 Set the disk to mount after a reboot. Start by getting this new drive's UUID:
 
 ```bash
-lsblk -f /dev/sda1
+lsblk -f /dev/sdX
 ```
 
 Open `fstab` in a text editor.
@@ -136,12 +137,45 @@ You probably don't want to have to type in your password each time plus ssh keys
 ssh-copy-id YOUR-PI'S-IP-ADDRESS
 ```
 
-The following increases security but you weill no longer be able to login with just a password so try logging out and back in without a password to ensure it works.
+Then change the following line in /etc/ssh/sshd_config
 
-The following lines should be uncommented (remove the #) and changed accordingly in `/etc/ssh/sshd_config`
+
+## Installing manually {#installing-manually}
+
+Download the image
 
 ```bash
-PubkeyAuthentication yes # it's actually available by default
+wget gg
+```
 
-PasswordAuthentication no
+
+### Enable ssh {#enable-ssh}
+
+Fine the `boot` drive and mount it.
+
+```bash
+lsblk
+```
+
+gives an output like
+
+```bash
+NAME          MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINTS
+sda             8:0    0  113G  0 disk
+├─sda1          8:1    0  511M  0 part  /boot
+├─sda2          8:2    0 19.5G  0 part  /
+└─sda3          8:3    0   93G  0 part
+  └─ainstsda3 254:0    0   93G  0 crypt /home
+sdb             8:16   1 14.5G  0 disk
+├─sdb1          8:17   1  256M  0 part
+└─sdb2          8:18   1  1.6G  0 part  /mnt
+zram0         253:0    0  3.9G  0 disk  [SWAP]
+```
+
+`sbd` is my SD card and `sdb2`, the larger partition is where the boot folder is.
+
+```bash
+sudo mount /dev/sdb2 /mnt
+touch /mnt/boot/ssh
+sudo umount /dev/sdb2
 ```

@@ -76,11 +76,11 @@ paginate = 10
     name       = "music"
     url        = "/mainpage/music"
     weight     = 2
-  [[menu.main]]
-    identifier = "other"
-    name       = "other"
-    url        = "/mainpage/other"
-    weight     = 3
+  # [[menu.main]]
+  #   identifier = "other"
+  #   name       = "other"
+  #   url        = "/mainpage/other"
+  #   weight     = 3
   [[menu.main]]
     identifier = "contact"
     name       = "contact"
