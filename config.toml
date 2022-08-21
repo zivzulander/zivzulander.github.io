@@ -13,8 +13,7 @@ paginate = 10
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
   canonifyURLs = true
-  # backgroundImage = "/headshots/matt7.jpg"
-  backgroundImage = ""
+  backgroundImage = "/headshots/matt7.jpg"
   enableThemeToggle = true
   enableGlobalLanguageMenu = false
 
@@ -53,7 +52,7 @@ paginate = 10
 [languages]
   [languages.en]
     title = "matt morris"
-    subtitle = "my personal website"
+    subtitle = ""
     keywords = ""
     copyright = ''
     readOtherPosts = "Read other posts"
