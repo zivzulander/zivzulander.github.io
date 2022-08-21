@@ -13,7 +13,7 @@ paginate = 10
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
   canonifyURLs = true
-  backgroundImage = "/headshots/matt7.jpg"
+  backgroundImage = "/headshots/matt5bw.webp"
   enableThemeToggle = true
   enableGlobalLanguageMenu = false
 
