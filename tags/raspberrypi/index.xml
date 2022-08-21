@@ -1,20 +1,2 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>raspberrypi on matt morris</title>
-    <link>https://mattmorris.ca/tags/raspberrypi/</link>
-    <description>Recent content in raspberrypi on matt morris</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://mattmorris.ca/tags/raspberrypi/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Setup Your Raspberry Pi</title>
-      <link>https://mattmorris.ca/projects/setup_pi/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://mattmorris.ca/projects/setup_pi/</guid>
-      <description>Installing the OS to an SD Card Install the Raspberry Pi Imager. Under CHOOSE OS select Raspberry Pi OS (Other) and Raspberry Pi OS Lite (64-bit). Click the settings cog to setup wifi, enable ssh, change the default password and change locale settings. Under CHOOSE STORAGE select your inserted sd card.
-Find your pi&amp;rsquo;s ip address Raspberry Pi Documentation - Remote Access Boot up the pi and find your new ip address.</description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>raspberrypi on matt morris</title><link>https://mattmorris.ca/tags/raspberrypi/</link><description>Recent content in raspberrypi on matt morris</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="https://mattmorris.ca/tags/raspberrypi/index.xml" rel="self" type="application/rss+xml"/><item><title>Setup Your Raspberry Pi</title><link>https://mattmorris.ca/projects/setup_pi/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://mattmorris.ca/projects/setup_pi/</guid><description>Installing the OS to an SD Card Install the Raspberry Pi Imager. Under CHOOSE OS select Raspberry Pi OS (Other) and Raspberry Pi OS Lite (64-bit). Click the settings cog to setup wifi, enable ssh, change the default password and change locale settings. Under CHOOSE STORAGE select your inserted sd card.
+Find your pi&amp;rsquo;s ip address Raspberry Pi Documentation - Remote Access Boot up the pi and find your new ip address.</description></item></channel></rss>
