@@ -100,3 +100,7 @@ paginate = 10
     disable = true
   [privacy.youtube]
     disable = true
+
+[markup]
+  [markup.highlight]
+    style = 'monokai'
