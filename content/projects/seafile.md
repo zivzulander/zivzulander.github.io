@@ -8,107 +8,112 @@ draft = false
 
 <div class="org-center">
 
-Updated on August 27, 2022 for [Seafile Server 9.0.2](https://github.com/haiwen/seafile-rpi) on Raspberry Pi Bullseye.
+Updated on August 29, 2022 for [Seafile Server 9.0.2](https://github.com/haiwen/seafile-rpi) on Raspberry Pi Bullseye.
 
 </div>
 
-[Seafile](https://www.seafile.com/en/home/) is a free and open source file syncing tool that can be self-hosted on a raspberry pi. Below is a brief comparison of similar programs that are also free and self-hostable on a pi:
+[Seafile](https://www.seafile.com/en/home/) is a free and open source file syncing tool that can be self-hosted on a raspberry pi. While there are other tools you can use to sync your data, Seafile has a few advantages:
 
-| Program   | Share files with others | Apps             | Speed |
-|-----------|-------------------------|------------------|-------|
-| Seafile   | yes                     | anything         | fast  |
-| Nextcloud | yes                     | anything         | slow  |
-| Syncthing | no                      | poor iOS support | fast  |
+-   access data remotely over https
+-   send or share files and folders with other users or guests
+-   edit documents right in the browser
+-   simple WebDAV setup
+-   2FA
+-   iOS clients
+-   data de-duplication
+-   multi-user support
 
-We'll be installing **Seafile** on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain. There are instructions on [Seafile's website](https://manual.seafile.com/deploy/) but the script and docker image don't seem to work on with the pi build. We'll be doing it all manually.
+N.B. there is one well-known disadvantage: Files are stored in a proprietary format which can't be accessed through a normal file browser. You have to either mount it or run a [script](https://manual.seafile.com/maintain/seafile_fsck/) to convert the data.
+
+You could hack together your own server with [syncthing](https://syncthing.net/), [rclone mount](https://rclone.org/commands/rclone_mount/), [nginx WebDAV](https://nginx.org/en/docs/http/ngx_http_dav_module.html), etc., but it will probably be a lot more trouble.
+
+we'll be installing **seafile** on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain. there are instructions on [seafile's website](https://manual.seafile.com/deploy/) but the script and docker image don't seem to work on with the pi build. we'll be doing it all manually.
 
 
-## Getting Started {#getting-started}
+## getting started {#getting-started}
 
-Click [here]({{< relref "setup_pi" >}}) to setup your pi with 64-bit **Raspberry Pi OS**.
+click [here]({{< relref "setup_pi" >}}) to setup your pi with 64-bit **raspberry pi os**.
 
 
-### Getting started with your own domain {#getting-started-with-your-own-domain}
+### getting started with your own domain {#getting-started-with-your-own-domain}
 
-For security we're only going to access Seafile though https. You'll need your own domain. I use [namesilo](https://www.namesilo.com/) but there are many options. A domain such as yourdomain.xyz is about $1/year. You can even use the same address's subdomains for other applications such as bitwarden.yourdomain.xyz.
+for security we're only going to access seafile though https. you'll need your own domain. i use [namesilo](https://www.namesilo.com/) but there are many options. a domain such as yourdomain.xyz is about $1/year. you can even use the same address's subdomains for other applications such as bitwarden.yourdomain.xyz.
 
-Once you have this you need to point dns records to your public ip. How this is done is a little different for each site but there should be an option to manage dns where you can add an `A record` pointing to your [public IPv4 address](https://whatismyipaddress.com/) and a `AAAA record` pointing to your IPv6 address. Something like this:
+once you have this you need to point dns records to your public ip. how this is done is a little different for each site but there should be an option to manage dns where you can add an `a record` pointing to your [public ipv4 address](https://whatismyipaddress.com/) and a `aaaa record` pointing to your ipv6 address. something like this:
 
-| Type | Domain | Data                     | TTL    |
+| type | domain | data                     | ttl    |
 |------|--------|--------------------------|--------|
-| A    |        | 12.34.56.78              | 1 hour |
-| AAAA |        | 1234:5a78:b90:c123::d4e5 | 1 hour |
+| a    |        | 12.34.56.78              | 1 hour |
+| aaaa |        | 1234:5a78:b90:c123::d4e5 | 1 hour |
 
-If you leave the _domain_ (sometimes called _hostname_) blank then this will point to _yourdomain.xyz_. If you add a domain like _seafile_ then your Seafile will be on _seafile.yourdomain.xyz_. Which you choose is up to you.
+if you leave the _domain_ (sometimes called _hostname_) blank then this will point to _yourdomain.xyz_. if you add a domain like _seafile_ then your seafile will be on _seafile.yourdomain.xyz_. which you choose is up to you.
 
-| Type | Domain  | Data                     | TTL    |
+| type | domain  | data                     | ttl    |
 |------|---------|--------------------------|--------|
-| A    | seafile | 12.34.56.78              | 1 hour |
-| AAAA | seafile | 1234:5a78:b90:c123::d4e5 | 1 hour |
+| a    | seafile | 12.34.56.78              | 1 hour |
+| aaaa | seafile | 1234:5a78:b90:c123::d4e5 | 1 hour |
 
-It can take a few minutes to an hour for your dns server to refresh which is why we're doing this step first. You can run `ping -c1 seafile.yourdomain.xyz` to see if the IP matches your home ip address.
+it can take a few minutes to an hour for your dns server to refresh which is why we're doing this step first. you can run `ping -c1 seafile.yourdomain.xyz` to see if the ip matches your home ip address.
 
 
-### Install MySQL {#install-mysql}
+### installing prerequisites {#installing-prerequisites}
 
-Update your pi if you didn't already..
+update your pi if you didn't already.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-Install dependencies for `MySQL`.
+install dependencies for `mysql` and other tools we'll be using.
 
 ```bash
-sudo apt-get install -y python3 python3-setuptools python3-pip default-libmysqlclient-dev python3-pymysql memcached libmemcached-dev libffi-dev
+sudo apt install -y python3 python3-setuptools python3-pip default-libmysqlclient-dev python3-pymysql memcached libmemcached-dev libffi-dev python3-certbot-nginx/stable nginx fail2ban
 
-sudo pip3 install --timeout=3600 django==3.2.* Pillow pylibmc captcha jinja2 sqlalchemy==1.4.3 \
+sudo pip3 install --timeout=3600 django==3.2.* pillow pylibmc captcha jinja2 sqlalchemy==1.4.3 \
     django-pylibmc django-simple-captcha python3-ldap mysqlclient pycryptodome==3.12.0 cffi==1.14.0 lxml pymysql
 ```
 
-Set a MySQL root password which you'll be asked for later. You can just press enter on most other questions to accept the default response.
+set a mysql root password which you'll be asked for later. you can just press enter on the other questions to accept the default response.
 
 ```bash
 sudo mysql_secure_installation
 ```
 
 
-### Download Seafile {#download-seafile}
+### download seafile {#download-seafile}
 
-Make a directory for Seafile to be installed to.
+make a directory for seafile to be installed to. i'm installing it to my mounted usb harddrive.
 
 ```bash
 mkdir /mnt/usb/seafile
 ```
 
-Download the Seafile script.
+download the seafile script.
 
 ```bash
-wget -qO- "https://github.com/haiwen/seafile-rpi/releases/download/v9.0.2/seafile-server-9.0.2-bullseye-arm64v8l.tar.gz" | tar xvz -C /mnt/usb/seafile
+wget -qo- "https://github.com/haiwen/seafile-rpi/releases/download/v9.0.2/seafile-server-9.0.2-bullseye-arm64v8l.tar.gz" | tar xvz -c /mnt/usb/seafile
 ```
 
 
-### Install Seafile {#install-seafile}
+### install seafile {#install-seafile}
 
-Run the installation script.
+run the installation script.
 
 ```bash
-cd seafile-server-9.0.2
-
-./setup-seafile-mysql.sh
+/mnt/usb/seafile/setup-seafile-mysql.sh
 ```
 
-Choose `[1] Create new ccnet/seafile/seahub databases`. Most of the questions have a default answer which is a good idea to use. Just hit enter on those. Use the root password from when you typed `sudo mysql_secure_installation`.
+choose `[1] create new ccnet/seafile/seahub databases`. most of the questions have a default answer which is a good idea to use. just hit enter on those. use the root password from when you typed `sudo mysql_secure_installation`.
 
 
-### Forward Ports on your router {#forward-ports-on-your-router}
+### forward ports on your router {#forward-ports-on-your-router}
 
-We're using a reverse proxy so we only forward port 443 on your router to your raspberry pi's local ip.
+we're using a reverse proxy with `certbot` so we forward port 80 and 443 on your router to your raspberry pi's local ip.
 
 
-### Configuring Seafile {#configuring-seafile}
+### configuring seafile {#configuring-seafile}
 
-Some config files need to be changed since we'll be accessing Seafile from our custom domain with https.
+some config files need to be changed since we'll be accessing seafile from our custom domain through https.
 
 
 #### ccnet.conf {#ccnet-dot-conf}
@@ -117,10 +122,10 @@ Some config files need to be changed since we'll be accessing Seafile from our c
 nano /opt/seafile/conf/ccnet.conf
 ```
 
-Change `SERVICE_URL` to your domain. e.g.
+change `service_url` to your domain. e.g.
 
 ```bash
-SERVICE_URL = https://seafile.example.com
+service_url = https://seafile.example.com
 ```
 
 
@@ -130,72 +135,56 @@ SERVICE_URL = https://seafile.example.com
 nano /opt/seafile/conf/seahub_settings.py
 ```
 
-Change/add `FILE_SERVER_ROOT` to your domain and change your timezone.
+change/add `file_server_root` to your domain and change your timezone.
 
 ```bash
-FILE_SERVER_ROOT = 'https://seafile.example.com/seafhttp'
-TIMEZONE = 'America/Denver'
+file_server_root = 'https://seafile.example.com/seafhttp'
+timezone = 'america/denver'
 ```
 
 
 #### seafdav.conf {#seafdav-dot-conf}
 
-If you want webdav (you probably do) then change `enabled` to `true` and change the location of the folder with `share_name = /seafdav`. This will give you a working webdav server which is more widely available for syncing with apps. You can access this through <https://seafile.example.com/seafdav>
+if you want WebDAV (note that you cannot use with 2FA) then change `enabled` to `true` and change the location of the folder with `share_name = /seafdav`. This will give you a working WebDAV server which is more widely available for syncing with apps. You can access this through <https://seafile.example.com/seafdav>
 
 ```bash
 nano /opt/seafile/conf/seafdav.conf
 ```
 
 
-### If you don't plan on using https {#if-you-don-t-plan-on-using-https}
-
-This is a much less secure method and you will lose out on a lot of the benefits of Seafile such as sending links to others and accessing it remotely without VPNs but here it is.
-
-
 ### Reverse Proxy {#reverse-proxy}
 
-This forwards http requests from <https://yourdomain.xyz> on port 443 to wherever Seafile is running. In our case, <http://127.0.0.1:8000>.
-
-We'll go back the `pi` user to run the next steps.
-
-```bash
-exit
-```
+This forwards http requests from <https://yourdomain.xyz> to wherever Seafile is running. In our case, <http://127.0.0.1:8000>.
 
 
 #### HTTPS certificate from [letsencrypt](https://letsencrypt.org/) {#https-certificate-from-letsencrypt}
 
-Change YOURDOMAIN. It will place the files in `/etc/letsencrypt/live/YOURDOMAIN.XYZ/`
+Change YOURDOMAIN.XYZ to your domain. It will place the files in `/etc/letsencrypt/live/YOURDOMAIN.XYZ/`. Remember that port 80 must be open for validation and that no other web server can be running.
 
 ```bash
-sudo apt install python3-certbot-nginx/stable -y
 sudo certbot certonly --nginx --domain YOURDOMAIN.XYZ
-```
-
-
-#### Install `nginx` {#install-nginx}
-
-```bash
-sudo apt install nginx
-sudo rm /etc/nginx/sites-{enabled,available}/default
-touch /etc/nginx/sites-available/seafile.conf
-sudo ln -s /etc/nginx/sites-available/seafile.conf /etc/nginx/sites-enabled/seafile.conf
 ```
 
 
 #### Configuring `nginx` {#configuring-nginx}
 
-This is the trickiest part if it's new to you. Copy the example below which is pieced together from [Seafile's website](https://manual.seafile.com/deploy/https_with_nginx/#modifying-nginx-configuration-file) and adjust appropriately. At the very least, everything is ALL CAPS should be changed.
+First things first.
 
 ```bash
+sudo rm /etc/nginx/sites-{enabled,available}/default
+touch /etc/nginx/sites-available/seafile.conf
+sudo ln -s /etc/nginx/sites-available/seafile.conf /etc/nginx/sites-enabled/seafile.conf
 sudo -e /etc/nginx/sites-available/seafile.conf
 ```
 
+This can be the trickiest part if it's new to you. Copy the example below which is pieced together from [Seafile's website](https://manual.seafile.com/deploy/https_with_nginx/#modifying-nginx-configuration-file) and adjust appropriately.
+
 Here are some things to watch out for:
 
--   Replace _seafile.example.com_ with your domain each time it comes up
--   Change `root = /opt/seafile/seafile-server-latest/seahub;` in `location /media` to where you'll store all your files. I have this on an external drive `root = /mnt/usbHDD/seafile;`
--   This example contains a webdav config under `location /seafdav` so you can remove those lines if you aren't using it.
+-   At the very least, everything is ALL CAPS should be changed.
+-   Replace _YOURDOMAIN.XYZ_ with your domain
+-   Change `root = /mnt/usb/seafile/seafile-server-latest/seahub;` in `location /media` to where you'll store all your files.
+-   This example contains a WebDAV config under `location /seafdav` so you can remove those lines if you aren't using it.
 
 ```nginx
 
@@ -203,7 +192,7 @@ log_format seafileformat '$http_x_forwarded_for $remote_addr [$time_local] "$req
 
 server {
     listen       80;
-    server_name  SEAFILE.EXAMPLE.COM;
+    server_name  YOURDOMAIN.XYZ;
     rewrite ^ https://$http_host$request_uri? permanent;    # Forced redirect from HTTP to HTTPS
 
     server_tokens off;      # Prevents the Nginx version from being displayed in the HTTP response header
@@ -211,9 +200,9 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    ssl_certificate /etc/letsencrypt/live/SEAFILE.EXAMPLE.COM/fullchain.pem;    # Path to your fullchain.pem
-    ssl_certificate_key /etc/letsencrypt/live/SEAFILE.EXAMPLE.COM/privkey.pem;  # Path to your privkey.pem
-    server_name SEAFILE.EXAMPLE.COM;
+    ssl_certificate /etc/letsencrypt/live/YOURDOMAIN.XYZ/fullchain.pem;    # Path to your fullchain.pem
+    ssl_certificate_key /etc/letsencrypt/live/YOURDOMAIN.XYZ/privkey.pem;  # Path to your privkey.pem
+    server_name YOURDOMAIN.XYZ;
     server_tokens off;
 
     location / {
@@ -273,6 +262,12 @@ Start `nginx.`
 sudo systemctl enable --now nginx
 ```
 
+Test that the configuration works
+
+```bash
+sudo nginx -t
+```
+
 
 ### Starting Seafile {#starting-seafile}
 
@@ -282,7 +277,7 @@ We want Seafile to start on boot. Create these 2 systemd unit files.
 sudo -e /etc/systemd/system/seafile.service
 ```
 
-Paste in the following:
+Paste in the following (change directories if necessary):
 
 ```bash
 [Unit]
@@ -291,8 +286,8 @@ After=network.target mysql.service
 
 [Service]
 Type=forking
-ExecStart=/opt/seafile/seafile-server-latest/seafile.sh start
-ExecStop=/opt/seafile/seafile-server-latest/seafile.sh stop
+ExecStart=/mnt/usb/seafile/seafile-server-latest/seafile.sh start
+ExecStop=/mnt/usb/seafile/seafile-server-latest/seafile.sh stop
 LimitNOFILE=infinity
 User=seafile
 Group=seafile
@@ -315,8 +310,8 @@ After=network.target seafile.service
 [Service]
 Environment="LC_ALL=C"
 Type=forking
-ExecStart=/opt/seafile/seafile-server-latest/seahub.sh start
-ExecStop=/opt/seafile/seafile-server-latest/seahub.sh stop
+ExecStart=/mnt/usb/seafile/seafile-server-latest/seahub.sh start
+ExecStop=/mnt/usb/seafile/seafile-server-latest/seahub.sh stop
 User=seafile
 Group=seafile
 
@@ -339,30 +334,15 @@ You should now be able to access Seafile from the https domain. Login with the u
 ### Extra Stuff {#extra-stuff}
 
 
-#### Enable Two Factor Authentication {#enable-two-factor-authentication}
-
-**NOTE: Does not work with WebDAV**
-
-Click on your avatar and got to _System Admin &gt; Settings_.
-
-Check the box titled `Enable two factor authentication`.
-
-
-#### Add more users {#add-more-users}
-
-Click on your avatar and got to _System Admin &gt; Users_.
-
-
 #### Enable Fail2Ban {#enable-fail2ban}
 
 [Read more here.](https://manual.seafile.com/security/fail2ban/)
 
 Make sure you added your timezone when changing [seahub_settings.py](#seahub-settings-dot-py)
 
-Install it and edit the `jail.local` file.
+Edit the `jail.local` file.
 
 ```bash
-sudo apt install fail2ban
 sudo cp /etc/fail2ban/jail.{conf,local}
 sudo -e /etc/fail2ban/jail.local
 ```
@@ -374,7 +354,7 @@ Add the following at the bottom changing the logpath if needed.
 enabled  = true
 port     = http,https
 filter   = seafile-auth
-logpath  = /opt/seafile/logs/seahub.log
+logpath  = /mnt/usb/seafile/logs/seahub.log
 maxretry = 3
 ```
 
@@ -418,7 +398,7 @@ sudo fail2ban-client reload
 
 #### Automated Garbage Collection {#automated-garbage-collection}
 
-i.e. emptying the trash
+(Emptying the trash)
 
 We'll have to write a little script for this since we want to automate it and it requires a few steps.
 
@@ -427,6 +407,7 @@ sudo -e /home/pi/.local/bin/cleanup_seafile
 ```
 
 Paste in the following. Change the path to Seafile if necessary.
+**need seafile user stuff and sudo?**
 
 ```bash
 #!/bin/bash
@@ -436,7 +417,7 @@ systemctl stop seafile seahub
 
 sleep 20
 
-sudo -u seafile /opt/seafile/seafile-server-latest/seaf-gc.sh
+sudo -u seafile /mnt/usb/seafile/seafile-server-latest/seaf-gc.sh
 
 sleep 60
 
@@ -451,14 +432,28 @@ Make this file executable:
 sudo chmod +x /home/pi/.local/bin/cleanup_seafile
 ```
 
-Again, we'll use `crontab` (still in user `pi`) to automate running this script.
+We'll use `crontab` to automate running this script.
 
 ```bash
 crontab -e
 ```
 
-Run at 4am first of each month.
+For example, to have it run at 4am on the first of each month. See [here](https://crontab.guru/) for other options.
 
 ```bash
-0 4 * */1 *  sudo /home/pi/.local/bin/cleanup_seafile
+0 4 1 * *  sudo /home/pi/.local/bin/cleanup_seafile
 ```
+
+
+#### Enable Two Factor Authentication {#enable-two-factor-authentication}
+
+**NOTE: Does not work with WebDAV**
+
+Click on your avatar and got to _System Admin &gt; Settings_.
+
+Check the box titled `Enable two factor authentication`.
+
+
+#### Add more users {#add-more-users}
+
+Click on your avatar and got to _System Admin &gt; Users_.
