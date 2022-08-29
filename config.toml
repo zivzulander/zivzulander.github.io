@@ -69,22 +69,22 @@ paginate = 10
   [[menu.main]]
     identifier = "about"
     name       = "about"
-    url        = "/mainpage/about"
+    url        = "/about"
     weight     = 1
   [[menu.main]]
     identifier = "music"
     name       = "music"
-    url        = "/mainpage/music"
+    url        = "/music"
     weight     = 2
   # [[menu.main]]
   #   identifier = "other"
   #   name       = "other"
-  #   url        = "/mainpage/other"
+  #   url        = "/other"
   #   weight     = 3
   [[menu.main]]
     identifier = "contact"
     name       = "contact"
-    url        = "/mainpage/contact"
+    url        = "/contact"
     weight     = 4
 
 [privacy]
