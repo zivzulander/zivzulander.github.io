@@ -29,6 +29,7 @@ Once you have your pi booted up and ssh'd into it you'll want to update your pi 
 
 ```bash
 sudo apt update && sudo apt upgrade -y
+sudo apt install unattended-upgrades
 ```
 
 Let's set up a `crontab` so this runs once a week.
@@ -70,7 +71,7 @@ mmcblk0
 For me it's `sda1`  on the 2nd line so we use `/dev/sda1` (it will always be `/dev/sdX` followed by a number where X is a lowercase letter). Copy this UUID which we'll use in a sec.
 
 
-### Format the drive (skip to [Mount the usb drive](#mount-the-usb-drive) if you don't need this) {#format-the-drive--skip-to-mount-the-usb-drive--org260b033--if-you-don-t-need-this}
+### Format the drive (skip to [Mount the usb drive](#mount-the-usb-drive) if you don't need this) {#format-the-drive--skip-to-mount-the-usb-drive--orge7a3e70--if-you-don-t-need-this}
 
 It's always good to start with a fresh drive and it will be a lot easier if it's not formatted for a macos or Windows filesystem.
 

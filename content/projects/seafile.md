@@ -8,7 +8,7 @@ draft = false
 
 <div class="org-center">
 
-Updated on August 29, 2022 for [Seafile Server 9.0.2](https://github.com/haiwen/seafile-rpi) on Raspberry Pi Bullseye.
+_Updated on August 29, 2022 for [Seafile Server 9.0.2](https://github.com/haiwen/seafile-rpi) on Raspberry Pi Bullseye._
 
 </div>
 
@@ -23,48 +23,54 @@ Updated on August 29, 2022 for [Seafile Server 9.0.2](https://github.com/haiwen/
 -   data de-duplication
 -   multi-user support
 
-N.B. there is one well-known disadvantage: Files are stored in a proprietary format which can't be accessed through a normal file browser. You have to either mount it or run a [script](https://manual.seafile.com/maintain/seafile_fsck/) to convert the data.
+There is one well-known disadvantage: Files are stored in a proprietary format which can't be accessed through a normal file browser. You have to either mount it or run a [script](https://manual.seafile.com/maintain/seafile_fsck/) to convert the data.
 
 You could hack together your own server with [syncthing](https://syncthing.net/), [rclone mount](https://rclone.org/commands/rclone_mount/), [nginx WebDAV](https://nginx.org/en/docs/http/ngx_http_dav_module.html), etc., but it will probably be a lot more trouble.
 
-we'll be installing **seafile** on a raspberry pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain. there are instructions on [seafile's website](https://manual.seafile.com/deploy/) but the script and docker image don't seem to work on with the pi build. we'll be doing it all manually.
+We'll be installing **Seafile** on a Raspberry Pi 4 and setting up a reverse proxy so we can connect to it remotely though our own domain. There are instructions on [Seafile's website](https://manual.seafile.com/deploy/) but the script and docker image don't seem to work on with the pi build at this time. We'll be installing it manually.
 
 
-## getting started {#getting-started}
+## Getting started {#getting-started}
 
-click [here]({{< relref "setup_pi" >}}) to setup your pi with 64-bit **raspberry pi os**.
+Click [here]({{< relref "setup_pi" >}}) to setup your pi with 64-bit **Raspberry Pi OS**.
 
 
-### getting started with your own domain {#getting-started-with-your-own-domain}
+### Setting up your own domain {#setting-up-your-own-domain}
 
-for security we're only going to access seafile though https. you'll need your own domain. i use [namesilo](https://www.namesilo.com/) but there are many options. a domain such as yourdomain.xyz is about $1/year. you can even use the same address's subdomains for other applications such as bitwarden.yourdomain.xyz.
+For security we're only going to access seafile though https. You'll need your own domain. I use [Namesilo](https://www.namesilo.com/) but there are many options. A domain such as YOURDOMAIN.XYZ is about $1/year. You can even use the same address's subdomains for other applications such as bitwarden.YOURDOMAIN.XYZ.
 
-once you have this you need to point dns records to your public ip. how this is done is a little different for each site but there should be an option to manage dns where you can add an `a record` pointing to your [public ipv4 address](https://whatismyipaddress.com/) and a `aaaa record` pointing to your ipv6 address. something like this:
+Once you have this you need to point dns records to your public ip. How this is done is a little different for each site but there should be an option to manage dns where you can add an `a record` pointing to your [public ipv4 address](https://whatismyipaddress.com/) and a `aaaa record` pointing to your ipv6 address. Something like this:
 
 | type | domain | data                     | ttl    |
 |------|--------|--------------------------|--------|
 | a    |        | 12.34.56.78              | 1 hour |
 | aaaa |        | 1234:5a78:b90:c123::d4e5 | 1 hour |
 
-if you leave the _domain_ (sometimes called _hostname_) blank then this will point to _yourdomain.xyz_. if you add a domain like _seafile_ then your seafile will be on _seafile.yourdomain.xyz_. which you choose is up to you.
+If you leave the _domain_ (sometimes called _hostname_) blank then this will point to _YOURDOMAIN.XYZ_. If you add a domain like _seafile_ then your seafile will be on _seafile.YOURDOMAIN.XYZ_. Whichever you choose is up to you.
 
 | type | domain  | data                     | ttl    |
 |------|---------|--------------------------|--------|
 | a    | seafile | 12.34.56.78              | 1 hour |
 | aaaa | seafile | 1234:5a78:b90:c123::d4e5 | 1 hour |
 
-it can take a few minutes to an hour for your dns server to refresh which is why we're doing this step first. you can run `ping -c1 seafile.yourdomain.xyz` to see if the ip matches your home ip address.
+It can take a few minutes to an hour for your dns server to refresh which is why we're doing this step first. You can run `ping -c1 seafile.YOURDOMAIN.XYZ` to see if the ip matches your home ip address.
 
 
-### installing prerequisites {#installing-prerequisites}
+### Installing prerequisites {#installing-prerequisites}
 
-update your pi if you didn't already.
+Update your pi if you didn't already.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-install dependencies for `mysql` and other tools we'll be using.
+Since we are going to be exposing this server the internet, we should make sure security updates are installed automatically.
+
+```bash
+sudo apt install unattended-upgrades -y
+```
+
+Install dependencies for `mysql` and other tools we'll be using.
 
 ```bash
 sudo apt install -y python3 python3-setuptools python3-pip default-libmysqlclient-dev python3-pymysql memcached libmemcached-dev libffi-dev python3-certbot-nginx/stable nginx fail2ban
@@ -73,7 +79,7 @@ sudo pip3 install --timeout=3600 django==3.2.* pillow pylibmc captcha jinja2 sql
     django-pylibmc django-simple-captcha python3-ldap mysqlclient pycryptodome==3.12.0 cffi==1.14.0 lxml pymysql
 ```
 
-set a mysql root password which you'll be asked for later. you can just press enter on the other questions to accept the default response.
+Set a mysql root password which you'll be asked for later. you can just press enter on the other questions to accept the default response.
 
 ```bash
 sudo mysql_secure_installation
