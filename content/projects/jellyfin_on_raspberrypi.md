@@ -4,15 +4,12 @@ author = ["Matt Morris"]
 draft = false
 +++
 
-## Install Jellyfin, Sonarr, Radarr and Deluge On a Raspberry Pi 4 {#install-jellyfin-sonarr-radarr-and-deluge-on-a-raspberry-pi-4}
+_Updated on September 01, 2022._
 
-Updated on August 27, 2022.
-Read [here](https://gist.github.com/zivzulander/09c74ba8217d2a98dcbe1ca40653fc8a) for the basics of getting a Raspberry Pi setup for server use.
+[Setup your pi]({{< relref "setup_pi" >}}) with 64-bit **Raspberry Pi OS** and mount your storage media.
 
 
-### Install docker and docker-compose {#install-docker-and-docker-compose}
-
-Install `docker`.
+## Install docker {#install-docker}
 
 ```bash
 curl -sSL https://get.docker.com | sh
@@ -24,24 +21,11 @@ Add docker to the usergroup pi.
 sudo usermod -aG docker pi
 ```
 
-Preferred way to install `docker-compose` (from [here](https://gist.github.com/blazewicz/04e666ae1f25387c8b291d81b12c550c)).
-
-> NOTE: You can run these commands in one shot by pressing Ctrl-x-e (that's control `x` and keep holding control while pressing `e`) and pasting the lines as is.
+Make a folder for all the config data. I keep it all on my usb HDD.
 
 ```bash
-sudo apt install python3-venv python3-dev libffi-dev libssl-dev
-sudo mkdir -p /opt/local/docker-compose
-sudo python3 -m venv /opt/local/docker-compose/venv
-sudo /opt/local/docker-compose/venv/bin/pip install --upgrade pip
-sudo /opt/local/docker-compose/venv/bin/pip install docker-compose
-sudo ln -s /opt/local/docker-compose/venv/bin/docker-compose /usr/local/bin/docker-compose
-```
-
-Make a folder for all the config data. I just keep it all on my external HDD.
-
-```bash
-mkdir /mnt/usbHDD/docker
-cd /mnt/usbHDD/docker
+mkdir /mnt/usb/docker
+cd /mnt/usb/docker
 ```
 
 Create and open the `docker-compose.yml` file.
@@ -50,7 +34,8 @@ Create and open the `docker-compose.yml` file.
 nano docker-compose.yml
 ```
 
-Copy the following making adjustments as necessary for your file system. You'll likely need to change the timezone and some of the volumes.
+Copy the following, making adjustments as necessary for your file system. You'll
+likely need to change the timezone and some of the volumes.
 
 > NOTE: Docker volumes look like `/path/on/your/harddrive:/what/the/docker/container/sees` so change the part before the colon only.
 >
@@ -74,14 +59,14 @@ jellyfin:
         #- JELLYFIN_PublishedServerUrl=192.168.0.5 #optional
     volumes:
       - ./jellyfin:/config
-      - /mnt/usbHDD/data:/media
+      - /mnt/usb/data:/data
       - ./garbage:/data/tvshows
       - ./garbage:/data/movies
       - /opt/vc/lib:/opt/vc/lib
       - /dev/shm:/config/data/transcoding-temp/transcodes
     ports:
       - 8096:8096
-      - 8920:8920 #optional
+      - 8920:8920     #optional
       - 7359:7359/udp #optional
       - 1900:1900/udp #optional
     devices:
@@ -99,9 +84,9 @@ jellyfin:
       - PGID=1000
       - TZ=America/Edmonton
     volumes:
-      - ./radarr/config:/config
-      - ./Movies:/movies
-      - ./downloads:/downloads #optional torrent downloads folder
+      - ./radarr:/config
+      - /mnt/usb/data/movies:/data/movies
+      - /mnt/usb/data/downloads:/data/downloads #optional torrent downloads folder
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -113,9 +98,9 @@ jellyfin:
       - PGID=1000
       - TZ=America/Edmonton
     volumes:
-      - ./sonarr/config:/config
-      - ./TV Shows:/tv
-      - ./downloads:/downloads
+      - ./sonarr:/config
+      - /mnt/usb/data/tv:/data/tv
+      - /mnt/usb/data/downloads:/data/downloads #optional torrent downloads folder
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -128,23 +113,25 @@ jellyfin:
       - TZ=America/Edmonton
     volumes:
       - ./deluge:/config
-      - /mnt/usbHDD/data/downloads:/data/downloads # where all your torrents will download
+      - /mnt/usb/data/downloads:/data/downloads
     ports:
       - 8112:8112
       - 6881:6881
       - 6881:6881/udp
     restart: unless-stopped
-  tautulli:
-    image: lscr.io/linuxserver/tautulli
-    container_name: tautulli
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Edmonton
     volumes:
-      - ./tautulli:/config
+      - ./bazarr:/config
+      - /mnt/usb/data/movies:/data/movies
+      - /mnt/usb/data/tv:/data/tv
     ports:
-      - 8181:8181
+      - 6767:6767
     restart: unless-stopped
 ```
 
@@ -155,33 +142,29 @@ docker-compose up -d
 ```
 
 
-### Configuring {#configuring}
+## Configuring {#configuring}
 
 You can now access all your web apps and begin to customize.
 
-| <http://app.plex.tv>             | plex   |
-|----------------------------------|--------|
-| <http://raspberryipaddress:7878> | radarr |
-| <http://raspberryipaddress:8989> | sonarr |
-| <http://raspberryipaddress:8112> | deluge |
+| <http://raspberryipaddress:7878> | jellyfin |
+|----------------------------------|----------|
+| <http://raspberryipaddress:7878> | radarr   |
+| <http://raspberryipaddress:8989> | sonarr   |
+| <http://raspberryipaddress:6767> | bazarr   |
+| <http://raspberryipaddress:8112> | deluge   |
 
-Your **raspberrypiIPADDRESS** can be found using `hostname -I | xargs -n 1`. It should be the first number unless you have multiple networks setup (e.g. ethernet and wifi).
+Your **raspberrypiIPADDRESS** can be found using ~hostname -I | grep -Eo '^&sect;\*'
 
-
-#### Plex {#plex}
-
-<http://raspberryipaddress:32400/web>
-
-Add your Movies and TV library. Since we forwarded the folders in docker as `- ./TV Shows:/tv` this means that all our videos will be in `/path/to/docker-compose.yml/folder/TV Shows` which Plex sees as `/tv` so add `/tv` as the location of all your tv shows and `/movies` for all your movies.
+Add your Movies and TV library. Since we forwarded the folders in docker, TV Shows are in `/data/tv` and movies in `/data/movies`.
 
 
-#### Radarr {#radarr}
+### Radarr {#radarr}
 
 Go to the web app <http://raspberryipaddress:7878> and click through the links:
 
 Settings &gt; Media Management &gt; Add a Root Folder (at the very bottom)
 
-Add `/movies`
+Add `/data/movies`
 
 Go to Settings &gt; Download Clients &gt; hit the big plus
 
@@ -192,13 +175,13 @@ Add deluge with the following settings:
 | Port | 8112                 |
 
 
-#### Sonarr {#sonarr}
+### Sonarr {#sonarr}
 
 Go to the web app <http://raspberryipaddress:8989> and click through the links:
 
 Settings &gt; Media Management &gt; Add a Root Folder (at the very bottom)
 
-Add `/tv`
+Add `/data/tv`
 
 Go to Settings &gt; Download Clients &gt; hit the big plus
 
@@ -209,22 +192,20 @@ Add deluge with the following settings:
 | Port | 8112                 |
 
 
-#### Deluge {#deluge}
+### Deluge {#deluge}
 
 Default user is **admin** and password **deluge**
 
 Open Preferences and change the following:
 
-<!--list-separator-->
 
--  Downloads
+#### Downloads {#downloads}
 
-    Change Download to: `/downloads`
+Change Download to: `/data/downloads`
 
-    Change Move completed to: `/downloads/completed` (optional)
+Change Move completed to: `/downloads/completed` (optional)
 
-<!--list-separator-->
 
--  Interface
+#### Interface {#interface}
 
-    Change _webui_ password.
+Change _webui_ password.
