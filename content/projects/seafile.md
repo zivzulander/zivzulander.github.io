@@ -8,7 +8,7 @@ draft = false
 
 <div class="org-center">
 
-_Updated on September 01, 2022 for [Seafile Server 9.0.2](https://github.com/haiwen/seafile-rpi) on Raspberry Pi Bullseye._
+_Updated on September 07, 2022 for [Seafile Server 9.0.2](https://github.com/haiwen/seafile-rpi) on Raspberry Pi Bullseye._
 
 </div>
 
