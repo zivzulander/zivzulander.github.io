@@ -4,7 +4,7 @@ author = ["Matt Morris"]
 draft = false
 +++
 
-_Updated on September 01, 2022._
+_Updated on November 22, 2022._
 
 The following will get you started with [Jellyfin](https://jellyfin.org/), [Radarr](https://radarr.video/), [Sonarr](https://sonarr.tv/), [Bazarr](https://www.bazarr.media/) and
 [Deluge](https://www.deluge-torrent.org/) running on a Raspberry Pi. [Setup your pi]({{< relref "setup_pi" >}}) with 64-bit **Raspberry Pi OS** and
@@ -148,7 +148,7 @@ You can now access all your web apps and begin to customize.
 Your Raspberry Pi's ip address can be found using
 
 ```bash
-hostname -I | grep -Eo '%\S*'
+hostname -I | grep -Eo '^\S*'
 ```
 
 
