@@ -13,5 +13,3 @@ majoring in composition.
 Since university Matt has been actively performing, composing, accompanying and teaching.
 
 [Email: mattmorris@mattmorris.ca](mailto:mattmorris@mattmorris.ca)
-
-{{< figure src="/headshots/matt5bw.jpg" >}}
