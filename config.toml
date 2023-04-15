@@ -81,11 +81,11 @@ paginate = 10
   #   name       = "other"
   #   url        = "/other"
   #   weight     = 3
-  [[menu.main]]
-    identifier = "contact"
-    name       = "contact"
-    url        = "/contact"
-    weight     = 4
+  # [[menu.main]]
+  #   identifier = "contact"
+  #   name       = "contact"
+  #   url        = "/contact"
+  #   weight     = 4
 
 [privacy]
   [privacy.disqus]
